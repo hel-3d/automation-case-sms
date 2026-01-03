@@ -3,7 +3,7 @@ import base64
 from pathlib import Path
 import requests
 import os
-
+from dotenv import load_dotenv  # pip install python-dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -11,33 +11,41 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
+load_dotenv()
+
 # ----------------- КОНСТАНТЫ -----------------
+
 URL = "https://poisondrop.com/"
 
 ARTIFACTS_DIR = Path("artifacts")
 ARTIFACTS_DIR.mkdir(exist_ok=True)
+
 LOG_FILE = ARTIFACTS_DIR / "registration_log.txt"
+
 MAX_ARTIFACT_FILES = 20
 
 # CoreCluster
-API_KEY = "623d4ead-74db-40d5-9716-e65a3f1ce6de"
-SERVICE = "pod"      # PoisonDrop
-COUNTRY = "43"       # Germany
+# Берем ключ из переменных окружения, если нет — пусто
+API_KEY = os.getenv("CORECLUSTER_API_KEY", "")
+SERVICE = "pod"  # PoisonDrop
+COUNTRY = "43"   # Germany
 
 # RuCaptcha
-RUCAPTCHA_KEY = "cfaa520473f8a93cf94f69d0aec557c6"
+RUCAPTCHA_KEY = os.getenv("RUCAPTCHA_KEY", "")
 RUCAPTCHA_IN = "http://rucaptcha.com/in.php"
 RUCAPTCHA_RES = "http://rucaptcha.com/res.php"
 
-# HTTP-прокси из задания
-PROXY_HOST = "res-unlimited-9b50b01a.plainproxies.com"
-PROXY_PORT = 8080
-PROXY_USER = "Svt3H4Bnl7-country-DE-session-fxuoGqSWAj-lifetime-8"
-PROXY_PASS = "jX6TD77KVzfrQ0O"
+# HTTP-прокси
+PROXY_HOST = os.getenv("PROXY_HOST", "proxy.example.com")
+PROXY_PORT = int(os.getenv("PROXY_PORT", 8080))
+PROXY_USER = os.getenv("PROXY_USER", "user")
+PROXY_PASS = os.getenv("PROXY_PASS", "pass")
+
 PROXY_URL = f"http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
 PROXIES = {"http": PROXY_URL, "https": PROXY_URL}
 
 MAX_PHONE_CYCLES = 100
+
 
 
 # ----------------- ВСПОМОГАТЕЛЬНЫЕ -----------------
